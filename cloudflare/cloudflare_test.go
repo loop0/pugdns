@@ -17,7 +17,7 @@ func NewTestClient(url string) CloudflareClient {
 
 func TestGetZoneByName(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
-		expected := "/client/v4/zones?name=loop0.sh"
+		expected := "/client/v4/zones?name=example.com"
 		if req.URL.String() != expected {
 			t.Fatalf("Request path mismatch: %v != %v", expected, req.URL.String())
 		}
@@ -26,7 +26,7 @@ func TestGetZoneByName(t *testing.T) {
 
 	client := NewTestClient(server.URL)
 
-	zone, _ := client.GetZoneByName("loop0.sh")
+	zone, _ := client.GetZoneByName("example.com")
 	if zone.ID != "test" {
 		t.Fail()
 	}
@@ -35,7 +35,7 @@ func TestGetZoneByName(t *testing.T) {
 
 func TestGetDNSRecordByName(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
-		expected := "/client/v4/zones/test/dns_records?name=vpn.loop0.sh"
+		expected := "/client/v4/zones/test/dns_records?name=vpn.example.com"
 		if req.URL.String() != expected {
 			t.Fatalf("Request path mismatch: %v != %v", expected, req.URL.String())
 		}
@@ -44,7 +44,7 @@ func TestGetDNSRecordByName(t *testing.T) {
 
 	client := NewTestClient(server.URL)
 	zone := Zone{"test"}
-	dns, _ := client.GetDNSRecordByName(zone, "vpn.loop0.sh")
+	dns, _ := client.GetDNSRecordByName(zone, "vpn.example.com")
 	if dns.ID != "test" {
 		t.Fail()
 	}
@@ -62,7 +62,7 @@ func TestUpdateDNSRecord(t *testing.T) {
 	client := NewTestClient(server.URL)
 	zone := Zone{"test"}
 	dns := DNSRecord{"test", "127.0.0.1"}
-	updated, _ := client.UpdateDNSRecord(zone, dns, "vpn.loop0.sh", "127.0.0.1")
+	updated, _ := client.UpdateDNSRecord(zone, dns, "vpn.example.com", "127.0.0.1")
 	if updated.ID != "test" {
 		t.Fail()
 	}

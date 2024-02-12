@@ -1,7 +1,7 @@
 package main
 
 import (
-	"log"
+	"log/slog"
 	"os"
 
 	"github.com/loop0/pugdns/cloudflare"
@@ -27,32 +27,36 @@ func main() {
 
 	ipify := ipify.NewClient()
 
-	log.Println("Obtaining public ip")
+	slog.Info("Obtaining public ip")
 	ip, err := ipify.GetPublicIP()
 	if err != nil {
-		log.Fatalf("Unable to obtain public ip: %v", err)
+		slog.Error("Unable to obtain public ip", "error", err)
+		os.Exit(1)
 	}
-	log.Printf("Public ip is %v\n", ip.IP)
+	slog.Info("Public", "ip", ip.IP)
 
-	log.Printf("Updating domain %v\n", config.Domain)
+	slog.Info("Updating", "domain", config.Domain)
 	cloudflare := cloudflare.NewClient(config.ApiToken)
 	zone, err := cloudflare.GetZoneByName(config.Zone)
 	if err != nil {
-		log.Fatalf("Unable to obtain dns zone info: %v", err)
+		slog.Error("Unable to obtain dns zone info", "error", err)
+		os.Exit(1)
 	}
 
 	dns, err := cloudflare.GetDNSRecordByName(zone, config.Domain)
 	if err != nil {
-		log.Fatalf("Unable to obtain dns record: %v", err)
+		slog.Error("Unable to obtain dns record", "error", err)
+		os.Exit(1)
 	}
 
 	if dns.Content != ip.IP {
 		_, err = cloudflare.UpdateDNSRecord(zone, dns, config.Domain, ip.IP)
 		if err != nil {
-			log.Fatalf("Unable to update dns record: %v", err)
+			slog.Error("Unable to update dns record", "error", err)
+			os.Exit(1)
 		}
-		log.Printf("Domain %v updated with ip %v", config.Domain, ip.IP)
+		slog.Info("Updated", "domain", config.Domain, "ip", ip.IP)
 	} else {
-		log.Printf("No changes to ip address, no update required")
+		slog.Info("No changes to ip address, no update required")
 	}
 }

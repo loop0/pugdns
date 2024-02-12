@@ -22,10 +22,10 @@ Once you have those env vars set you can just run:
 
 ```sh
 $ pugdns
-2024/02/11 16:37:57 Obtaining public ip
-2024/02/11 16:37:57 Public ip is xxx.xxx.xxx.xxx
-2024/02/11 16:37:57 Updating domain vpn.example.com
-2024/02/11 16:37:57 Domain vpn.example.com updated with ip xxx.xxx.xxx.xxx
+2024/02/11 16:37:57 INFO Obtaining public ip
+2024/02/11 16:37:57 INFO Public ip=xxx.xxx.xxx.xxx
+2024/02/11 16:37:57 INFO Updating domain=vpn.example.com
+2024/02/11 16:37:57 INFO Updated domain=vpn.example.com ip=xxx.xxx.xxx.xxx
 ```
 
 ## TODO
