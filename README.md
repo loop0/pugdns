@@ -1,5 +1,7 @@
 # pugdns
 
+![Yoda](images/yoda.png)
+
 pugdns updates a domain on cloudflare with your public ip address.
 
 ## Why
@@ -28,6 +30,6 @@ $ pugdns
 2024/02/11 16:37:57 INFO Updated domain=vpn.example.com ip=xxx.xxx.xxx.xxx
 ```
 
-## TODO
-- [ ] Dockerfile to create container
-- [ ] Instructions on how to run on kubernetes
+## kubernetes
+
+If you want to run pugdns in your kubernetes cluster take a look into `examples/k8s-cronjob.yaml` for a manifest for a cronjob that runs every hour to keep your domain update with you public ip address.

@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: pugdns
+spec:
+  schedule: "0 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: pugdns
+              image: loop0br/pugdns:latest
+              imagePullPolicy: IfNotPresent
+              env:
+                - name: PUGDNS_ZONE
+                  value: example.com
+                - name: PUGDNS_DOMAIN
+                  value: vpn.example.com
+                - name: PUGDNS_CLOUDFLARE_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: pugdns-secret
+                      key: cloudflare_token
+          restartPolicy: Never
