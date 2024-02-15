@@ -57,7 +57,7 @@ This is the list of currently supported providers for DNS:
 
 ### How to add providers
 
-There are currently only 2 types of providers required by pugdns to work which are defined by the following interfaces defined at `providers.go`:
+There are currently only 2 types of providers required by pugdns to work which are defined by the following interfaces at `providers.go`:
 
 ```go
 type IPAddressService interface {
