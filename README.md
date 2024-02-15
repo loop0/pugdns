@@ -30,6 +30,47 @@ $ pugdns
 2024/02/11 16:37:57 INFO Updated domain=vpn.example.com ip=xxx.xxx.xxx.xxx
 ```
 
-## kubernetes
+## Providers
+
+Some providers will require environment variables to be set
+
+### IP Address
+
+IP Address provider is selected via the `PUGDNS_IP_PROVIDER` environment variable. Default is `ipify`
+
+This is the list of currently supported providers for public ip address resolution:
+
+| Provider | Website | Required Env Vars |
+| - | - | - |
+| `ipify` | https://www.ipify.org/ | None |
+
+### DNS
+
+IP Address provider is selected via the `PUGDNS_DNS_PROVIDER` environment variable. Default is `cloudflare`
+
+This is the list of currently supported providers for DNS:
+
+| Provider | Website | Required Env Vars |
+| - | - | - |
+| `cloudflare` | https://cloudflare.com | `PUGDNS_CLOUDFLARE_TOKEN` |
+
+### How to add providers
+
+There are currently only 2 types of providers required by pugdns to work which are defined by the following interfaces defined at `providers.go`:
+
+```go
+type IPAddressService interface {
+	GetPublicIP() (string, error)
+}
+
+type DomainService interface {
+	UpdateDomain(ip string) error
+}
+```
+
+To add a new provider you just need to implement its interface and add it to `providers.go` function's `getIPAddressProvider` or `getDomainProvider`. For existing provider's implementation look into the `providers` folder.
+
+## Usage examples
+### kubernetes
 
 If you want to run pugdns in your kubernetes cluster take a look into `examples/k8s-cronjob.yaml` for a manifest for a cronjob that runs every hour to keep your domain update with you public ip address.

@@ -14,21 +14,21 @@ type PublicIP struct {
 	IP string `json:"ip"`
 }
 
-func (client *IPifyClient) GetPublicIP() (PublicIP, error) {
+func (client *IPifyClient) GetPublicIP() (string, error) {
 	resp, err := http.Get(client.BaseURL)
 	if err != nil {
-		return PublicIP{}, err
+		return "", err
 	}
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return PublicIP{}, err
+		return "", err
 	}
 
 	publicIP := PublicIP{}
 	json.Unmarshal(body, &publicIP)
-	return publicIP, nil
+	return publicIP.IP, nil
 }
 
 func NewClient() *IPifyClient {

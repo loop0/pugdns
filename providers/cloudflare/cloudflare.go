@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+
+	"github.com/loop0/pugdns/utils"
 )
 
 type Zone struct {
@@ -41,6 +43,8 @@ type CloudflareClient struct {
 	APIToken  string
 	BaseURL   string
 	APIPrefix string
+	Zone      string
+	Domain    string
 }
 
 func (client *CloudflareClient) request(method string, url string, data interface{}, params map[string]string, reqData interface{}) error {
@@ -64,7 +68,7 @@ func (client *CloudflareClient) request(method string, url string, data interfac
 	}
 	req.URL.RawQuery = query.Encode()
 
-	resp, err := client.Do(req)
+	resp, err := client.do(req)
 	if err != nil {
 		return err
 	}
@@ -83,13 +87,13 @@ func (client *CloudflareClient) request(method string, url string, data interfac
 	return nil
 }
 
-func (client *CloudflareClient) Do(req *http.Request) (*http.Response, error) {
+func (client *CloudflareClient) do(req *http.Request) (*http.Response, error) {
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", client.APIToken))
 	req.Header.Set("Content-Type", "application/json")
 	return client.Client.Do(req)
 }
 
-func (client *CloudflareClient) GetZoneByName(name string) (Zone, error) {
+func (client *CloudflareClient) getZoneByName(name string) (Zone, error) {
 	url := fmt.Sprintf("%s/%v/zones", client.BaseURL, client.APIPrefix)
 	params := map[string]string{"name": name}
 	data := ZoneResponse{}
@@ -106,7 +110,7 @@ func (client *CloudflareClient) GetZoneByName(name string) (Zone, error) {
 	return data.Zones[0], nil
 }
 
-func (client *CloudflareClient) GetDNSRecordByName(zone Zone, name string) (DNSRecord, error) {
+func (client *CloudflareClient) getDNSRecordByName(zone Zone, name string) (DNSRecord, error) {
 	url := fmt.Sprintf("%v/%v/zones/%v/dns_records", client.BaseURL, client.APIPrefix, zone.ID)
 	params := map[string]string{"name": name}
 	data := DNSRecordsResponse{}
@@ -122,7 +126,7 @@ func (client *CloudflareClient) GetDNSRecordByName(zone Zone, name string) (DNSR
 	return data.DNSRecords[0], nil
 }
 
-func (client *CloudflareClient) UpdateDNSRecord(zone Zone, record DNSRecord, name string, content string) (DNSRecord, error) {
+func (client *CloudflareClient) updateDNSRecord(zone Zone, record DNSRecord, name string, content string) (DNSRecord, error) {
 	url := fmt.Sprintf("%v/%v/zones/%v/dns_records/%v", client.BaseURL, client.APIPrefix, zone.ID, record.ID)
 	data := DNSRecordResponse{}
 	reqData := DNSRecordUpdate{
@@ -139,11 +143,38 @@ func (client *CloudflareClient) UpdateDNSRecord(zone Zone, record DNSRecord, nam
 	return data.DNSRecord, nil
 }
 
-func NewClient(apiToken string) *CloudflareClient {
+func (client *CloudflareClient) UpdateDomain(ip string) error {
+	zone, err := client.getZoneByName(client.Zone)
+	if err != nil {
+		return fmt.Errorf("unable to obtain dns zone info: %v", err)
+	}
+
+	dns, err := client.getDNSRecordByName(zone, client.Domain)
+	if err != nil {
+		return fmt.Errorf("unable to obtain dns record: %v", err)
+	}
+
+	if dns.Content != ip {
+		_, err = client.updateDNSRecord(zone, dns, client.Domain, ip)
+		if err != nil {
+			return fmt.Errorf("unable to update dns record: %v", err)
+		}
+	}
+
+	return nil
+}
+
+func NewClient() *CloudflareClient {
+	apiToken := utils.GetEnvOrExit("PUGDNS_CLOUDFLARE_TOKEN")
+	zone := utils.GetEnvOrExit("PUGDNS_ZONE")
+	domain := utils.GetEnvOrExit("PUGDNS_DOMAIN")
+
 	return &CloudflareClient{
 		*http.DefaultClient,
 		apiToken,
 		"https://api.cloudflare.com",
 		"client/v4",
+		zone,
+		domain,
 	}
 }

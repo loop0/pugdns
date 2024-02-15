@@ -12,6 +12,8 @@ func NewTestClient(url string) CloudflareClient {
 		"token",
 		url,
 		"client/v4",
+		"example.com",
+		"vpn.example.com",
 	}
 }
 
@@ -26,7 +28,7 @@ func TestGetZoneByName(t *testing.T) {
 
 	client := NewTestClient(server.URL)
 
-	zone, _ := client.GetZoneByName("example.com")
+	zone, _ := client.getZoneByName("example.com")
 	if zone.ID != "test" {
 		t.Fail()
 	}
@@ -44,7 +46,7 @@ func TestGetDNSRecordByName(t *testing.T) {
 
 	client := NewTestClient(server.URL)
 	zone := Zone{"test"}
-	dns, _ := client.GetDNSRecordByName(zone, "vpn.example.com")
+	dns, _ := client.getDNSRecordByName(zone, "vpn.example.com")
 	if dns.ID != "test" {
 		t.Fail()
 	}
@@ -62,7 +64,7 @@ func TestUpdateDNSRecord(t *testing.T) {
 	client := NewTestClient(server.URL)
 	zone := Zone{"test"}
 	dns := DNSRecord{"test", "127.0.0.1"}
-	updated, _ := client.UpdateDNSRecord(zone, dns, "vpn.example.com", "127.0.0.1")
+	updated, _ := client.updateDNSRecord(zone, dns, "vpn.example.com", "127.0.0.1")
 	if updated.ID != "test" {
 		t.Fail()
 	}
