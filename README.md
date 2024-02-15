@@ -42,7 +42,8 @@ This is the list of currently supported providers for public ip address resoluti
 
 | Provider | Website | Required Env Vars |
 | - | - | - |
-| `ipify` | https://www.ipify.org/ | None |
+| `ipify` | https://www.ipify.org | None |
+| `myipio` | https://www.my-ip.io | None |
 
 ### DNS
 
@@ -52,7 +53,7 @@ This is the list of currently supported providers for DNS:
 
 | Provider | Website | Required Env Vars |
 | - | - | - |
-| `cloudflare` | https://cloudflare.com | `PUGDNS_CLOUDFLARE_TOKEN` |
+| `cloudflare` | https://www.cloudflare.com | `PUGDNS_CLOUDFLARE_TOKEN` |
 
 ### How to add providers
 

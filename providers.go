@@ -1,10 +1,12 @@
 package main
 
 import (
+	"log/slog"
 	"os"
 
 	"github.com/loop0/pugdns/providers/cloudflare"
 	"github.com/loop0/pugdns/providers/ipify"
+	"github.com/loop0/pugdns/providers/myipio"
 )
 
 type IPAddressService interface {
@@ -17,16 +19,34 @@ type DomainService interface {
 
 func getIPAddressProvider() IPAddressService {
 	provider := os.Getenv("PUGDNS_IP_PROVIDER")
-	switch provider {
-	default:
-		return ipify.NewClient()
+	if provider == "" {
+		provider = "ipify"
 	}
+	slog.Info("Using ip address", "provider", provider)
+	switch provider {
+	case "ipify":
+		return ipify.NewClient()
+	case "myipio":
+		return myipio.NewClient()
+	default:
+		slog.Error("Unsupported ip address provider", "provider", provider)
+		os.Exit(1)
+	}
+	return nil
 }
 
 func getDomainProvider() DomainService {
 	provider := os.Getenv("PUGDNS_DNS_PROVIDER")
-	switch provider {
-	default:
-		return cloudflare.NewClient()
+	if provider == "" {
+		provider = "cloudflare"
 	}
+	slog.Info("Using dns", "provider", provider)
+	switch provider {
+	case "cloudflare":
+		return cloudflare.NewClient()
+	default:
+		slog.Error("Unsupported dns provider", "provider", provider)
+		os.Exit(1)
+	}
+	return nil
 }
