@@ -25,5 +25,5 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: loop0br/pugdns
+          tags: loop0br/pugdns:dev
           labels: ${{ steps.meta.outputs.labels }}
