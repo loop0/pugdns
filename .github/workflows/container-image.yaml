@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+  release:
+    types: [published]
 
 jobs:
   push_to_registry:
@@ -25,5 +27,5 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: loop0br/pugdns:dev
+          tags: loop0br/pugdns:${{ github.event.release.tag_name || 'dev' }}${{ github.event.release.tag_name && ',loop0br/pugdns:latest' }}
           labels: ${{ steps.meta.outputs.labels }}
