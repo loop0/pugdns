@@ -7,6 +7,7 @@ import (
 	"github.com/loop0/pugdns/providers/cloudflare"
 	"github.com/loop0/pugdns/providers/ipify"
 	"github.com/loop0/pugdns/providers/myipio"
+	"github.com/loop0/pugdns/providers/viaip"
 )
 
 type IPAddressService interface {
@@ -28,6 +29,8 @@ func getIPAddressProvider() IPAddressService {
 		return ipify.NewClient()
 	case "myipio":
 		return myipio.NewClient()
+	case "viaip":
+		return viaip.NewClient()
 	default:
 		slog.Error("Unsupported ip address provider", "provider", provider)
 		os.Exit(1)
