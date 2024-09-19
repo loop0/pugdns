@@ -44,6 +44,7 @@ This is the list of currently supported providers for public ip address resoluti
 | - | - | - |
 | `ipify` | https://www.ipify.org | None |
 | `myipio` | https://www.my-ip.io | None |
+| `viaip` | https://viaip.com.br | None |
 
 ### DNS
 
