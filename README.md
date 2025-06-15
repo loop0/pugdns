@@ -2,7 +2,7 @@
 
 ![Yoda](images/yoda.png)
 
-pugdns updates a domain on cloudflare with your public ip address.
+pugdns updates a domain on the dns provider of choice with your public ip address.
 
 ## Why
 
@@ -17,7 +17,9 @@ pugdns gets the required configuration from environment variables as follows:
 ```sh
 PUGDNS_ZONE=example.com  # The zone name where the domain will be updated
 PUGDNS_DOMAIN=vpn.example.com  # The domain name to be updated with your public ip
-PUGDNS_CLOUDFLARE_TOKEN=<API_TOKEN>  # The cloudflare api token with read/write access to the zone
+PUGDNS_DNS_PROVIDER=desec  # The dns provider to be used when updating the dns record
+PUGDNS_DESEC_TOKEN=<API_TOKEN>  # The desc api token with read/write access to the zone
+PUGDNS_IP_PROVIDER=ipify  # The ip provider to resolve your public ip
 ```
 
 Once you have those env vars set you can just run:
@@ -56,8 +58,9 @@ This is the list of currently supported providers for DNS:
 
 | Provider | Website | Required Env Vars |
 | - | - | - |
-| `cloudflare` | https://www.cloudflare.com | `PUGDNS_CLOUDFLARE_TOKEN` |
 | `desec` | https://desec.io | `PUGDNS_DESEC_TOKEN` |
+| `cloudflare` | https://www.cloudflare.com | `PUGDNS_CLOUDFLARE_TOKEN` |
+
 
 ### How to add providers
 
