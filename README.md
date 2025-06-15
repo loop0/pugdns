@@ -49,12 +49,15 @@ This is the list of currently supported providers for public ip address resoluti
 ### DNS
 
 IP Address provider is selected via the `PUGDNS_DNS_PROVIDER` environment variable. Default is `cloudflare`
+Note that current providers only support updating subdomains, updating the apex is currently not supported.
+The application also assumes that you already have your dns record created at your provider.
 
 This is the list of currently supported providers for DNS:
 
 | Provider | Website | Required Env Vars |
 | - | - | - |
 | `cloudflare` | https://www.cloudflare.com | `PUGDNS_CLOUDFLARE_TOKEN` |
+| `desec` | https://desec.io | `PUGDNS_DESEC_TOKEN` |
 
 ### How to add providers
 

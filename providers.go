@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/loop0/pugdns/providers/cloudflare"
+	"github.com/loop0/pugdns/providers/desec"
 	"github.com/loop0/pugdns/providers/ipify"
 	"github.com/loop0/pugdns/providers/myipio"
 	"github.com/loop0/pugdns/providers/viaip"
@@ -47,6 +48,8 @@ func getDomainProvider() DomainService {
 	switch provider {
 	case "cloudflare":
 		return cloudflare.NewClient()
+	case "desec":
+		return desec.NewDeSECClient()
 	default:
 		slog.Error("Unsupported dns provider", "provider", provider)
 		os.Exit(1)
